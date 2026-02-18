@@ -1,11 +1,14 @@
 using Library.Domain.Models;
 
 namespace Library.Domain.Data;
-
+/// <summary>
 /// Класс, содержащий заранее подготовленные тестовые данные для доменной модели библиотеки
+/// </summary>
 public class DataSeeder
 {
+    /// <summary>
     /// Список видов изданий
+    /// </summary>
     public List<EditionType> EditionTypes { get; } =
     [
         new EditionType { Id = 1, Name = "Монография" },
@@ -20,7 +23,9 @@ public class DataSeeder
         new EditionType { Id = 10, Name = "Бизнес-литература" },
     ];
 
+    /// <summary>
     /// Список издательств
+    /// </summary>
     public List<Publisher> Publishers { get; } =
     [
         new Publisher { Id = 1, Name = "Бином" },
@@ -35,7 +40,9 @@ public class DataSeeder
         new Publisher { Id = 10, Name = "Энергия" },
     ];
 
+    /// <summary>
     /// Список книг с заполненными ссылками на издательства и виды изданий
+    /// </summary>
     public List<Book> Books { get; } =
     [
         new Book { Id = 1, InventoryNumber = "BK-101", AlphabetCode = "И-101", Authors = "И. Ньютон", Title = "Математические начала", EditionTypeId = 1, PublisherId = 5, Year = 1687 },
@@ -50,7 +57,9 @@ public class DataSeeder
         new Book { Id = 10, InventoryNumber = "BK-110", AlphabetCode = "Г-999", Authors = "А. Гауди", Title = "Архитектура форм", EditionTypeId = 1, PublisherId = 10, Year = 1925 },
     ];
 
-    /// Список читателей библиотеки, включающий персональные данные и дату регистрации
+    /// <summary>
+    /// Список читателей библиотеки с их данными
+    /// </summary>
     public List<Reader> Readers { get; } =
     [
         new Reader { Id = 1, FullName = "Орлов Денис Сергеевич", Address = "ул. Березовая, 12", Phone = "89110000001", RegistrationDate = DateTime.UtcNow.AddYears(-3) },
@@ -65,10 +74,12 @@ public class DataSeeder
         new Reader { Id = 10, FullName = "Громова София Артемовна", Address = "ул. Южная, 14", Phone = "89110000010", RegistrationDate = DateTime.UtcNow.AddMonths(-2) },
     ];
 
-    /// Список фактов выдачи книг
+     /// <summary>
+    /// Список выдачи книг
+    /// </summary>
     public List<BookIssue> BookIssues { get; } =
     [
-            new BookIssue { Id = 1, BookId = 1, ReaderId = 1, IssueDate = DateTime.UtcNow.AddDays(-15), Days = 30, ReturnDate = null },
+        new BookIssue { Id = 1, BookId = 1, ReaderId = 1, IssueDate = DateTime.UtcNow.AddDays(-15), Days = 30, ReturnDate = null },
         new BookIssue { Id = 2, BookId = 2, ReaderId = 1, IssueDate = DateTime.UtcNow.AddDays(-200), Days = 60, ReturnDate = DateTime.UtcNow.AddDays(-140) },
         new BookIssue { Id = 3, BookId = 3, ReaderId = 2, IssueDate = DateTime.UtcNow.AddDays(-40), Days = 14, ReturnDate = DateTime.UtcNow.AddDays(-20) },
         new BookIssue { Id = 4, BookId = 4, ReaderId = 2, IssueDate = DateTime.UtcNow.AddDays(-7), Days = 10, ReturnDate = null },
