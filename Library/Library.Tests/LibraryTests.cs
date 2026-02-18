@@ -129,13 +129,11 @@ public class LibraryTests(DataSeeder dataSeeder) : IClassFixture<DataSeeder>
             (b, issues) => new { Book = b, Count = issues.Count() }
         )
         .OrderBy(x => x.Count)
-        .ThenBy(x => x.Book.Title, StringComparer.Ordinal) // Явно указываем Ordinal сортировку
-        .Take(5)
+        .ThenBy(x => x.Book.Title, StringComparer.Ordinal)
         .ToList();
 
     var actualBookIds = bookCounts.Select(x => x.Book.Id).ToList();
-    var expectedBookIds = new List<int> { 9, 10, 5, 6, 3 }; // Исправь ожидаемый порядок!
-    
+    var expectedBookIds = new List<int> { 9, 10, 5, 6, 3 };
     Assert.Equal(expectedBookIds, actualBookIds);
     }
 }
