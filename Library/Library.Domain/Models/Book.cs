@@ -53,7 +53,7 @@ public class Book
     /// <summary>
     /// Год издания
     /// </summary>
-    public int Year { get; set; }
+    public required int Year { get; set; }
 
     /// <summary>
     /// Записи о выдаче книги

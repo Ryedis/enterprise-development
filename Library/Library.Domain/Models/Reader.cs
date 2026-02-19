@@ -28,7 +28,7 @@ public class Reader
     /// <summary>
     /// Дата регистрации
     /// </summary>
-    public DateTime? RegistrationDate { get; set; }
+    public DateOnly? RegistrationDate { get; set; }
 
     /// <summary>
     /// Выданные книги

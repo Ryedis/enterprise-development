@@ -5,6 +5,8 @@ namespace Library.Domain.Models;
 /// </summary>
 public class BookIssue
 {
+    private readonly Library.Domain.Abstractions.ITimeProvider _timeProvider;
+
     /// <summary>
     /// Уникальный идентификатор
     /// </summary>
@@ -41,13 +43,21 @@ public class BookIssue
     public required int Days { get; set; }
 
     /// <summary>
-    /// Дата возврата книги
+    /// Дата возврата книги (IssueDate + Days)
     /// </summary>
-    public DateTime? ReturnDate { get; set; }
+    public DateTime? ReturnDate => IssueDate.AddDays(Days);
+
+    /// <summary>
+    /// Конструктор с опциональным поставщиком времени
+    /// </summary>
+    public BookIssue(Library.Domain.Abstractions.ITimeProvider? timeProvider = null)
+    {
+        _timeProvider = timeProvider ?? new Library.Domain.Abstractions.SystemTimeProvider();
+    }
 
     /// <summary>
     /// Флаг просрочки срока возврата книги
     /// </summary>
     public bool IsOverdue =>
-        ReturnDate == null && DateTime.UtcNow.Date > IssueDate.Date.AddDays(Days);
+        ReturnDate == null && _timeProvider.Now.Date > IssueDate.AddDays(Days).Date;
 }

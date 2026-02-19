@@ -1,24 +1,42 @@
 using Library.Domain.Data;
+using Library.Domain.Abstractions;
 
 namespace Library.Tests;
 
 /// <summary>
 /// Набор unit тестов для тестирования доменной области
 /// </summary>
-public class LibraryTests(DataSeeder dataSeeder) : IClassFixture<DataSeeder>
+public class LibraryTests
 {
+    // Экземпляр DataSeeder для доступа к тестовым данным
+    private readonly DataSeeder _dataSeeder;
+
     /// <summary>
-    /// Проверяет что активные выдачи сортируются по названию книги и возвращают ожидаемый порядок идентификаторов книг
+    // Фиксированная дата
+    /// </summary>
+    private readonly DateTime _fixedNow = new(2026, 2, 19);
+
+    /// <summary>
+    /// Конструктор класса, создаёт DataSeeder с фиксированной датой
+    /// </summary>
+    public LibraryTests()
+    {
+        var fakeTime = new FakeTimeProvider(_fixedNow);
+        _dataSeeder = new DataSeeder(fakeTime);
+    }
+
+    /// <summary>
+    /// Топ 5 издательств за последний год по количеству выдач и сравнивает по Id и количествам
     /// </summary>
     [Fact]
     public void IssuedBooks_OrderByBookTitle_ReturnsActiveIssuesOrderedByTitle()
     {
-        var actualBookIds = dataSeeder.BookIssues
-            .Where(bi => bi.ReturnDate == null)
-            .Join(dataSeeder.Books,
-                  bi => bi.BookId,
-                  b => b.Id,
-                  (bi, b) => new { bi, b })
+        var actualBookIds = _dataSeeder.BookIssues
+            .Where(bi => _fixedNow.Date < bi.ReturnDate)
+            .Join(_dataSeeder.Books,
+                bi => bi.BookId,
+                b => b.Id,
+                (bi, b) => new { bi, b })
             .OrderBy(x => x.b.Title)
             .Select(x => x.b.Id)
             .ToList();
@@ -34,14 +52,14 @@ public class LibraryTests(DataSeeder dataSeeder) : IClassFixture<DataSeeder>
     [Fact]
     public void Top5Readers_ByIssuesCountInPeriod_ReturnsExpectedTop5()
     {
-        var periodStart = DateTime.UtcNow.AddYears(-1);
-        var periodEnd = DateTime.UtcNow;
+        var periodStart = _fixedNow.AddYears(-1);
+        var periodEnd = _fixedNow;
 
-        var topReaders = dataSeeder.BookIssues
+        var topReaders = _dataSeeder.BookIssues
             .Where(bi => bi.IssueDate >= periodStart && bi.IssueDate <= periodEnd)
             .GroupBy(bi => bi.ReaderId)
             .Select(g => new { ReaderId = g.Key, Count = g.Count() })
-            .Join(dataSeeder.Readers, g => g.ReaderId, r => r.Id, (g, r) => new { r.Id, r.FullName, g.Count })
+            .Join(_dataSeeder.Readers, g => g.ReaderId, r => r.Id, (g, r) => new { r.Id, r.FullName, g.Count })
             .OrderByDescending(x => x.Count)
             .ThenBy(x => x.FullName)
             .Take(5)
@@ -63,13 +81,13 @@ public class LibraryTests(DataSeeder dataSeeder) : IClassFixture<DataSeeder>
     [Fact]
     public void Readers_ByMaxLoanDaysOrderedByFullName_ReturnsExpected()
     {
-        var maxDays = dataSeeder.BookIssues.Max(bi => bi.Days);
+        var maxDays = _dataSeeder.BookIssues.Max(bi => bi.Days);
 
-        var readersWithMaxDays = dataSeeder.BookIssues
+        var readersWithMaxDays = _dataSeeder.BookIssues
             .Where(bi => bi.Days == maxDays)
             .Select(bi => bi.ReaderId)
             .Distinct()
-            .Join(dataSeeder.Readers, id => id, r => r.Id, (id, r) => new { r.Id, r.FullName })
+            .Join(_dataSeeder.Readers, id => id, r => r.Id, (id, r) => new { r.Id, r.FullName })
             .OrderBy(r => r.FullName)
             .Select(r => r.Id)
             .ToList();
@@ -88,15 +106,15 @@ public class LibraryTests(DataSeeder dataSeeder) : IClassFixture<DataSeeder>
     [Fact]
     public void Top5Publishers_ByIssuesCountLastYear_ReturnsExpectedTop5()
     {
-        var lastYearStart = DateTime.UtcNow.AddYears(-1);
-        var lastYearEnd = DateTime.UtcNow;
+        var lastYearStart = _fixedNow.AddYears(-1);
+        var lastYearEnd = _fixedNow;
 
-        var topPublishers = dataSeeder.BookIssues
+        var topPublishers = _dataSeeder.BookIssues
             .Where(bi => bi.IssueDate >= lastYearStart && bi.IssueDate <= lastYearEnd)
-            .Join(dataSeeder.Books, bi => bi.BookId, b => b.Id, (bi, b) => b.PublisherId)
+            .Join(_dataSeeder.Books, bi => bi.BookId, b => b.Id, (bi, b) => b.PublisherId)
             .GroupBy(pid => pid)
             .Select(g => new { PublisherId = g.Key, Count = g.Count() })
-            .Join(dataSeeder.Publishers, g => g.PublisherId, p => p.Id, (g, p) => new { p.Id, p.Name, g.Count })
+            .Join(_dataSeeder.Publishers, g => g.PublisherId, p => p.Id, (g, p) => new { p.Id, p.Name, g.Count })
             .OrderByDescending(x => x.Count)
             .ThenBy(x => x.Name)
             .Take(5)
@@ -116,24 +134,26 @@ public class LibraryTests(DataSeeder dataSeeder) : IClassFixture<DataSeeder>
     /// Топ 5 наименее популярных книг за последний год сравнение по Id и количествам
     /// </summary>
     [Fact]
-    public void Bottom5Books_ByIssuesCountLastYear_ReturnsExpectedBottom5() 
-{
-    var lastYearStart = DateTime.UtcNow.AddYears(-1);
-    var lastYearEnd = DateTime.UtcNow;
-    
-    var bookCounts = dataSeeder.Books
-        .GroupJoin(
-            dataSeeder.BookIssues.Where(bi => bi.IssueDate >= lastYearStart && bi.IssueDate <= lastYearEnd),
-            b => b.Id,
-            bi => bi.BookId,
-            (b, issues) => new { Book = b, Count = issues.Count() }
-        )
-        .OrderBy(x => x.Count)
-        .ThenBy(x => x.Book.Title, StringComparer.Ordinal)
-        .ToList();
+    public void Bottom5Books_ByIssuesCountLastYear_ReturnsExpectedBottom5()
+    {
+        var lastYearStart = _fixedNow.AddYears(-1);
+        var lastYearEnd = _fixedNow;
 
-    var actualBookIds = bookCounts.Select(x => x.Book.Id).ToList();
-    var expectedBookIds = new List<int> { 9, 10, 5, 6, 3 };
-    Assert.Equal(expectedBookIds, actualBookIds);
+        var bookCounts = _dataSeeder.Books
+            .GroupJoin(
+                _dataSeeder.BookIssues.Where(bi => bi.IssueDate >= lastYearStart && bi.IssueDate <= lastYearEnd),
+                b => b.Id,
+                bi => bi.BookId,
+                (b, issues) => new { Book = b, Count = issues.Count() }
+            )
+            .OrderBy(x => x.Count)
+            .ThenBy(x => x.Book.Title, StringComparer.Ordinal)
+            .Take(5)
+            .ToList();
+
+        var actualBookIds = bookCounts.Select(x => x.Book.Id).ToList();
+        var expectedBookIds = new List<int> { 9, 10, 5, 6, 3 };
+
+        Assert.Equal(expectedBookIds, actualBookIds);
     }
 }
