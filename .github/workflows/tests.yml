@@ -2,9 +2,7 @@ name: Run .NET Tests
 
 on:
   push:
-    branches: lab_1
   pull_request:
-    branches: lab_1
 
 jobs:
   build-and-test:

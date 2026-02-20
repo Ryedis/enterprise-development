@@ -1,5 +1,4 @@
 using Library.Domain.Models;
-using Library.Domain.Abstractions;
 
 namespace Library.Domain.Data;
 
@@ -8,15 +7,8 @@ namespace Library.Domain.Data;
 /// </summary>
 public class DataSeeder
 {
-    private readonly DateTime _now;
-
-    /// <summary>
-    /// Создаёт экземпляр DataSeeder с заданным провайдером времени.
-    /// </summary>
-    public DataSeeder(ITimeProvider timeProvider)
-    {
-        _now = timeProvider.Now;
-    }
+    
+    private static readonly DateTime SeedNow = new(2026, 2, 19);
 
     public List<EditionType> EditionTypes { get; } =
     [
@@ -62,31 +54,31 @@ public class DataSeeder
 
     public List<Reader> Readers => new()
     {
-        new Reader { Id = 1, FullName = "Орлов Денис Сергеевич", Address = "ул. Березовая, 12", Phone = "89110000001", RegistrationDate = DateOnly.FromDateTime(_now.AddMonths(-3)) },
-        new Reader { Id = 2, FullName = "Мельников Артем Игоревич", Address = "ул. Солнечная, 45", Phone = "89110000002", RegistrationDate = DateOnly.FromDateTime(_now.AddYears(-2)) },
-        new Reader { Id = 3, FullName = "Белов Кирилл Андреевич", Address = "ул. Полевая, 7", Phone = "89110000003", RegistrationDate = DateOnly.FromDateTime(_now.AddMonths(-18)) },
-        new Reader { Id = 4, FullName = "Егорова Марина Олеговна", Address = "ул. Озерная, 21", Phone = "89110000004", RegistrationDate = DateOnly.FromDateTime(_now.AddMonths(-12)) },
-        new Reader { Id = 5, FullName = "Тарасов Максим Дмитриевич", Address = "ул. Лесная, 3", Phone = "89110000005", RegistrationDate = DateOnly.FromDateTime(_now.AddMonths(-10)) },
-        new Reader { Id = 6, FullName = "Крылова Анастасия Павловна", Address = "ул. Школьная, 9", Phone = "89110000006", RegistrationDate = DateOnly.FromDateTime(_now.AddMonths(-8)) },
-        new Reader { Id = 7, FullName = "Никитин Роман Евгеньевич", Address = "ул. Центральная, 15", Phone = "89110000007", RegistrationDate = DateOnly.FromDateTime(_now.AddMonths(-6)) },
-        new Reader { Id = 8, FullName = "Волкова Дарья Ильинична", Address = "ул. Мира, 19", Phone = "89110000008", RegistrationDate = DateOnly.FromDateTime(_now.AddMonths(-5)) },
-        new Reader { Id = 9, FullName = "Зайцев Павел Николаевич", Address = "ул. Новая, 8", Phone = "89110000009", RegistrationDate = DateOnly.FromDateTime(_now.AddMonths(-4)) },
-        new Reader { Id = 10, FullName = "Громова София Артемовна", Address = "ул. Южная, 14", Phone = "89110000010", RegistrationDate = DateOnly.FromDateTime(_now.AddMonths(-2)) },
+        new Reader { Id = 1, FullName = "Орлов Денис Сергеевич", Address = "ул. Березовая, 12", Phone = "89110000001", RegistrationDate = DateOnly.FromDateTime(SeedNow.AddMonths(-3)) },
+        new Reader { Id = 2, FullName = "Мельников Артем Игоревич", Address = "ул. Солнечная, 45", Phone = "89110000002", RegistrationDate = DateOnly.FromDateTime(SeedNow.AddYears(-2)) },
+        new Reader { Id = 3, FullName = "Белов Кирилл Андреевич", Address = "ул. Полевая, 7", Phone = "89110000003", RegistrationDate = DateOnly.FromDateTime(SeedNow.AddMonths(-18)) },
+        new Reader { Id = 4, FullName = "Егорова Марина Олеговна", Address = "ул. Озерная, 21", Phone = "89110000004", RegistrationDate = DateOnly.FromDateTime(SeedNow.AddMonths(-12)) },
+        new Reader { Id = 5, FullName = "Тарасов Максим Дмитриевич", Address = "ул. Лесная, 3", Phone = "89110000005", RegistrationDate = DateOnly.FromDateTime(SeedNow.AddMonths(-10)) },
+        new Reader { Id = 6, FullName = "Крылова Анастасия Павловна", Address = "ул. Школьная, 9", Phone = "89110000006", RegistrationDate = DateOnly.FromDateTime(SeedNow.AddMonths(-8)) },
+        new Reader { Id = 7, FullName = "Никитин Роман Евгеньевич", Address = "ул. Центральная, 15", Phone = "89110000007", RegistrationDate = DateOnly.FromDateTime(SeedNow.AddMonths(-6)) },
+        new Reader { Id = 8, FullName = "Волкова Дарья Ильинична", Address = "ул. Мира, 19", Phone = "89110000008", RegistrationDate = DateOnly.FromDateTime(SeedNow.AddMonths(-5)) },
+        new Reader { Id = 9, FullName = "Зайцев Павел Николаевич", Address = "ул. Новая, 8", Phone = "89110000009", RegistrationDate = DateOnly.FromDateTime(SeedNow.AddMonths(-4)) },
+        new Reader { Id = 10, FullName = "Громова София Артемовна", Address = "ул. Южная, 14", Phone = "89110000010", RegistrationDate = DateOnly.FromDateTime(SeedNow.AddMonths(-2)) },
     };
 
     public List<BookIssue> BookIssues => new()
     {
-        new BookIssue { Id = 1, BookId = 1, ReaderId = 1, IssueDate = _now.AddDays(-15), Days = 30 },
-        new BookIssue { Id = 2, BookId = 2, ReaderId = 1, IssueDate = _now.AddDays(-200), Days = 60 },
-        new BookIssue { Id = 3, BookId = 3, ReaderId = 2, IssueDate = _now.AddDays(-40), Days = 14 },
-        new BookIssue { Id = 4, BookId = 4, ReaderId = 2, IssueDate = _now.AddDays(-7), Days = 10 },
-        new BookIssue { Id = 5, BookId = 5, ReaderId = 3, IssueDate = _now.AddDays(-300), Days = 21 },
-        new BookIssue { Id = 6, BookId = 6, ReaderId = 4, IssueDate = _now.AddDays(-50), Days = 14 },
-        new BookIssue { Id = 7, BookId = 7, ReaderId = 5, IssueDate = _now.AddDays(-3), Days = 7 },
-        new BookIssue { Id = 8, BookId = 8, ReaderId = 6, IssueDate = _now.AddDays(-120), Days = 30 },
-        new BookIssue { Id = 9, BookId = 9, ReaderId = 7, IssueDate = _now.AddDays(-60), Days = 20 },
-        new BookIssue { Id = 10, BookId = 10, ReaderId = 8, IssueDate = _now.AddDays(-25), Days = 14 },
-        new BookIssue { Id = 11, BookId = 1, ReaderId = 9, IssueDate = _now.AddDays(-5), Days = 10 },
-        new BookIssue { Id = 12, BookId = 2, ReaderId = 10, IssueDate = _now.AddDays(-90), Days = 30 }
+        new BookIssue { Id = 1, BookId = 1, ReaderId = 1, IssueDate = SeedNow.AddDays(-15), Days = 30 },
+        new BookIssue { Id = 2, BookId = 2, ReaderId = 1, IssueDate = SeedNow.AddDays(-200), Days = 60 },
+        new BookIssue { Id = 3, BookId = 3, ReaderId = 2, IssueDate = SeedNow.AddDays(-40), Days = 14 },
+        new BookIssue { Id = 4, BookId = 4, ReaderId = 2, IssueDate = SeedNow.AddDays(-7), Days = 10 },
+        new BookIssue { Id = 5, BookId = 5, ReaderId = 3, IssueDate = SeedNow.AddDays(-300), Days = 21 },
+        new BookIssue { Id = 6, BookId = 6, ReaderId = 4, IssueDate = SeedNow.AddDays(-50), Days = 14 },
+        new BookIssue { Id = 7, BookId = 7, ReaderId = 5, IssueDate = SeedNow.AddDays(-3), Days = 7 },
+        new BookIssue { Id = 8, BookId = 8, ReaderId = 6, IssueDate = SeedNow.AddDays(-120), Days = 30 },
+        new BookIssue { Id = 9, BookId = 9, ReaderId = 7, IssueDate = SeedNow.AddDays(-60), Days = 20 },
+        new BookIssue { Id = 10, BookId = 10, ReaderId = 8, IssueDate = SeedNow.AddDays(-25), Days = 14 },
+        new BookIssue { Id = 11, BookId = 1, ReaderId = 9, IssueDate = SeedNow.AddDays(-5), Days = 10 },
+        new BookIssue { Id = 12, BookId = 2, ReaderId = 10, IssueDate = SeedNow.AddDays(-90), Days = 30 }
     };
 }

@@ -1,5 +1,4 @@
 using Library.Domain.Data;
-using Library.Domain.Abstractions;
 
 namespace Library.Tests;
 
@@ -8,22 +7,15 @@ namespace Library.Tests;
 /// </summary>
 public class LibraryTests
 {
-    // Экземпляр DataSeeder для доступа к тестовым данным
-    private readonly DataSeeder _dataSeeder;
+    /// <summary>
+    /// Тестовые данные библиотеки
+    /// </summary>
+    private readonly DataSeeder _dataSeeder = new();
 
     /// <summary>
-    // Фиксированная дата
+    /// Контрольная дата, используемая в тестах
     /// </summary>
-    private readonly DateTime _fixedNow = new(2026, 2, 19);
-
-    /// <summary>
-    /// Конструктор класса, создаёт DataSeeder с фиксированной датой
-    /// </summary>
-    public LibraryTests()
-    {
-        var fakeTime = new FakeTimeProvider(_fixedNow);
-        _dataSeeder = new DataSeeder(fakeTime);
-    }
+    private readonly DateTime _now = new(2026, 2, 19);
 
     /// <summary>
     /// Топ 5 издательств за последний год по количеству выдач и сравнивает по Id и количествам
@@ -32,7 +24,7 @@ public class LibraryTests
     public void IssuedBooks_OrderByBookTitle_ReturnsActiveIssuesOrderedByTitle()
     {
         var actualBookIds = _dataSeeder.BookIssues
-            .Where(bi => _fixedNow.Date < bi.ReturnDate)
+            .Where(bi => _now.Date < bi.ReturnDate)
             .Join(_dataSeeder.Books,
                 bi => bi.BookId,
                 b => b.Id,
@@ -52,8 +44,8 @@ public class LibraryTests
     [Fact]
     public void Top5Readers_ByIssuesCountInPeriod_ReturnsExpectedTop5()
     {
-        var periodStart = _fixedNow.AddYears(-1);
-        var periodEnd = _fixedNow;
+        var periodStart = _now.AddYears(-1);
+        var periodEnd = _now;
 
         var topReaders = _dataSeeder.BookIssues
             .Where(bi => bi.IssueDate >= periodStart && bi.IssueDate <= periodEnd)
@@ -106,8 +98,8 @@ public class LibraryTests
     [Fact]
     public void Top5Publishers_ByIssuesCountLastYear_ReturnsExpectedTop5()
     {
-        var lastYearStart = _fixedNow.AddYears(-1);
-        var lastYearEnd = _fixedNow;
+        var lastYearStart = _now.AddYears(-1);
+        var lastYearEnd = _now;
 
         var topPublishers = _dataSeeder.BookIssues
             .Where(bi => bi.IssueDate >= lastYearStart && bi.IssueDate <= lastYearEnd)
@@ -136,8 +128,8 @@ public class LibraryTests
     [Fact]
     public void Bottom5Books_ByIssuesCountLastYear_ReturnsExpectedBottom5()
     {
-        var lastYearStart = _fixedNow.AddYears(-1);
-        var lastYearEnd = _fixedNow;
+        var lastYearStart = _now.AddYears(-1);
+        var lastYearEnd = _now;
 
         var bookCounts = _dataSeeder.Books
             .GroupJoin(
