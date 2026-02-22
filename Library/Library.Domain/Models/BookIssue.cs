@@ -1,4 +1,4 @@
-namespace Library.Domain.Models;
+﻿namespace Library.Domain.Models;
 
 /// <summary>
 /// Сущность выдачи книги читателю с указанием сроков и состояния возврата
@@ -34,20 +34,19 @@ public class BookIssue
     /// Дата выдачи книги
     /// </summary>
     public required DateTime IssueDate { get; set; }
-
     /// <summary>
     /// Количество дней, на которое выдана книга
     /// </summary>
     public required int Days { get; set; }
 
     /// <summary>
-    /// Дата возврата книги (IssueDate + Days)
+    /// Дата возврата книги, если null - книга не возвращена
     /// </summary>
-    public DateTime? ReturnDate => IssueDate.AddDays(Days);
+    public DateTime? ReturnDate { get; set; }
 
     /// <summary>
-    /// Флаг просрочки срока возврата книги
+    /// Признак просрочки срока возврата книги
     /// </summary>
-    public bool IsOverdue(DateTime currentDate) =>
-    ReturnDate == null && currentDate.Date > IssueDate.AddDays(Days).Date;
+    public bool IsOverdue =>
+        ReturnDate == null && DateTime.UtcNow.Date > IssueDate.Date.AddDays(Days);
 }

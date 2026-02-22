@@ -1,12 +1,12 @@
-﻿namespace Library.Domain.Models;
+﻿namespace Library.Application.Contracts.EditionTypes;
 
 /// <summary>
-/// Справочник видов издания, используемый для классификации книг
+/// DTO для получения вида издания
 /// </summary>
-public class EditionType
+public class EditionTypeDto
 {
     /// <summary>
-    /// Уникальный идентификатор
+    /// Уникальный идентификатор вида издания
     /// </summary>
     public required int Id { get; set; }
 

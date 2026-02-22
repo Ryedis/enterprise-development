@@ -1,12 +1,12 @@
-﻿namespace Library.Domain.Models;
+﻿namespace Library.Application.Contracts.Publishers;
 
 /// <summary>
-/// Справочник издательств, к которым относятся книги
+/// DTO для получения издательства
 /// </summary>
-public class Publisher
+public class PublisherDto
 {
     /// <summary>
-    /// Уникальный идентификатор
+    /// Уникальный идентификатор издательства
     /// </summary>
     public required int Id { get; set; }
 

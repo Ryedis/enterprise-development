@@ -1,15 +1,10 @@
-﻿namespace Library.Domain.Models;
+﻿namespace Library.Application.Contracts.Books;
 
 /// <summary>
-/// Сущность книги, содержащая сведения из каталога библиотеки
+/// DTO для создания или обновления книги
 /// </summary>
-public class Book
+public class BookCreateUpdateDto
 {
-    /// <summary>
-    /// Уникальный идентификатор
-    /// </summary>
-    public required int Id { get; set; }
-
     /// <summary>
     /// Инвентарный номер
     /// </summary>
@@ -26,7 +21,7 @@ public class Book
     public string? Authors { get; set; }
 
     /// <summary>
-    /// Название
+    /// Название книги
     /// </summary>
     public required string Title { get; set; }
 
@@ -36,27 +31,12 @@ public class Book
     public required int EditionTypeId { get; set; }
 
     /// <summary>
-    /// Вид издания
-    /// </summary>
-    public EditionType? EditionType { get; set; }
-
-    /// <summary>
     /// Идентификатор издательства
     /// </summary>
     public required int PublisherId { get; set; }
 
     /// <summary>
-    /// Издательство
-    /// </summary>
-    public Publisher? Publisher { get; set; }
-
-    /// <summary>
     /// Год издания
     /// </summary>
     public int Year { get; set; }
-
-    /// <summary>
-    /// Записи о выдаче книги
-    /// </summary>
-    public ICollection<BookIssue> Issues { get; set; } = [];
 }

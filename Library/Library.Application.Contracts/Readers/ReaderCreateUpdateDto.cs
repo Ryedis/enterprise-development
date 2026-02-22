@@ -1,15 +1,10 @@
-﻿namespace Library.Domain.Models;
+﻿namespace Library.Application.Contracts.Readers;
 
 /// <summary>
-/// Сущность читателя библиотеки с персональными данными и историей выдач
+/// DTO для создания или обновления читателя
 /// </summary>
-public class Reader
+public class ReaderCreateUpdateDto
 {
-    /// <summary>
-    /// Уникальный идентификатор
-    /// </summary>
-    public required int Id { get; set; }
-
     /// <summary>
     /// ФИО читателя
     /// </summary>
@@ -29,9 +24,4 @@ public class Reader
     /// Дата регистрации читателя
     /// </summary>
     public DateTime? RegistrationDate { get; set; }
-
-    /// <summary>
-    /// Выданные читателю книги
-    /// </summary>
-    public ICollection<BookIssue> BookIssues { get; set; } = [];
 }
