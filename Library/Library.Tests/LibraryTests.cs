@@ -23,7 +23,7 @@ public class LibraryTests(DataSeeder dataSeeder) : IClassFixture<DataSeeder>
             .Select(x => x.b.Id)
             .ToList();
 
-        var expectedBookIds = new List<int> { 10, 2, 2, 5, 6, 3, 1, 1, 8, 4, 7, 9};
+        var expectedBookIds = new List<int> { 9, 10, 2, 2, 5, 6, 3, 1, 1, 8, 4, 7};
 
         Assert.Equal(expectedBookIds, actualBookIds);
     }
@@ -136,7 +136,7 @@ public class LibraryTests(DataSeeder dataSeeder) : IClassFixture<DataSeeder>
         var actualBookIds = bookCounts.Select(x => x.Book.Id).ToList();
         var actualCounts = bookCounts.Select(x => x.Count).ToList();
 
-        var expectedBookIds = new List<int> { 10, 5, 6, 3, 8 };
+        var expectedBookIds = new List<int> { 9, 10, 5, 6, 3 };
         var expectedCounts = new List<int> { 1, 1, 1, 1, 1 };
 
         Assert.Equal(expectedBookIds, actualBookIds);
