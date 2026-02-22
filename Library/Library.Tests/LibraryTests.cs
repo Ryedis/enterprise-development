@@ -19,7 +19,7 @@ public class LibraryTests(DataSeeder dataSeeder) : IClassFixture<DataSeeder>
                   bi => bi.BookId,
                   b => b.Id,
                   (bi, b) => new { bi, b })
-            .OrderBy(x => x.b.Title)
+            .OrderBy(x => x.b.Title, StringComparer.InvariantCulture)
             .Select(x => x.b.Id)
             .ToList();
 
@@ -129,7 +129,7 @@ public class LibraryTests(DataSeeder dataSeeder) : IClassFixture<DataSeeder>
                 (b, issues) => new { Book = b, Count = issues.Count() }
             )
             .OrderBy(x => x.Count)
-            .ThenBy(x => x.Book.Title)
+            .ThenBy(x => x.Book.Title, StringComparer.InvariantCulture)
             .Take(5)
             .ToList();
 
